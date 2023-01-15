@@ -3,6 +3,8 @@
   hosts: ansibleminion
   gather_facts: false
   become: true
+  become_method: sudo
+  become_user: ansible
 
   tasks:
 
