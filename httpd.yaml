@@ -27,3 +27,10 @@
       name: firewalld
       enabled: true
       state: started
+
+  - name: Enable service http on firewalld
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
