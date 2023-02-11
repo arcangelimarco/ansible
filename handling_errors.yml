@@ -1,0 +1,48 @@
+---
+- name: Handling errors
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: Installing ftpclient
+    yum:
+      name: vsftpd
+      state: latest
+
+  - name: Installing firewalld
+    yum:
+      name: firewalld
+      state: latest
+
+  - name: Starting ftpclient
+    service:
+      name: vsftpd
+      enabled: yes
+      state: started
+
+  - name: Starging firewalld
+    service:
+      name: firewalld
+      enabled: yes
+      state: started
+
+  - name: Configure firewall rules
+    firewalld:
+      service: ftpd
+      permanent: true
+      state: enabled
+      immediate: yes
+
+    register: command_status
+    changed_when: "'Success' in command_status.stdout"
+    notify:
+      - restart_firewalld
+
+  force_handlers: true
+
+  handlers:
+  - name: restart_firewalld
+    service:
+      name: firewalld
+      state: restarted

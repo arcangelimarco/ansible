@@ -1,0 +1,23 @@
+---
+- name: Jinja ninja
+  hosts: all
+  gather_facts: false
+  vars:
+    sysadmin: linus
+    developers: iam
+    dba: kate
+
+  tasks:
+  - name: Creating the jinja2 file
+    template:
+       src: j2-template.j2
+       dest: jinja_ninja.txt
+
+    when: inventory_hostname in groups['localhostmaster']
+
+  - name: Creating the jinja2 file 2
+    template:
+       src: j2-template2.j2
+       dest: jinja_ninja2.txt
+
+    when: inventory_hostname in groups['localhostmaster']

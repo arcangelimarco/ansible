@@ -1,0 +1,40 @@
+---
+- name: Ensure vsftpd installed
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ vsftpd_packages }}"
+
+- name: Ensure vsftpd started and enabled to start at boot
+  service:
+    name: "{{ vsftpd_service }}"
+    state: started
+    enabled: true
+
+- name: Ensure vsftpd config file in the right position and notify a vsftpd restart
+  template:
+    src: vsftpd.conf.j2
+    dest: "{{ vsftpd_config_file }}"
+    owner: root
+    group: root
+    mode: 0600
+    setype: etc_t
+  notify: restart_vsftpd
+
+- name: Ensure firewalld installed
+  yum:
+    name: firewalld
+    state: installed
+
+- name: Ensure firewalld started and enabled to start at boot
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Ensure ftp fw rules are open
+  firewalld:
+    immediate: true
+    permanent: true
+    service: ftp
+    state: enabled

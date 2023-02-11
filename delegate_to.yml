@@ -1,0 +1,17 @@
+---
+- name: Delegating to
+  hosts: thelastminion
+  gather_facts: false
+
+  tasks:
+
+  - name: Command ps
+    command: ps
+    delegate_to: "{{ item }}"
+    with_items: "{{ groups['thelastminion'] }}"
+    register: exit_command
+
+  - name: Check
+    debug:
+      var: exit_command
+    delegate_to: localhost

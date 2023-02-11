@@ -1,0 +1,34 @@
+---
+- name: Installing ftpclient and configure firewall rules
+  hosts: minions
+  become: yes
+  become_method: sudo
+#  become_user: root
+
+  tasks:
+  - name: Installing ftpclient
+    yum:
+      name: vsftpd
+      state: latest
+  - name: Installing firewalld
+    yum:
+      name: firewalld
+      state: latest
+
+  - name: Starting ftpclient
+    service:
+      name: vsftpd
+      enabled: yes
+      state: started
+  - name: Starging firewalld
+    service:
+      name: firewalld
+      enabled: yes
+      state: started
+
+  - name: Configure firewall rules
+    firewalld:
+      service: ftp
+      permanent: true
+      state: enabled
+      immediate: yes

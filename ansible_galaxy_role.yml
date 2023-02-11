@@ -1,0 +1,8 @@
+---
+- name: Download a Installing git role from Ansible Galaxy
+  hosts: thelastminion
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: davidkarban.git

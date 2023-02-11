@@ -1,0 +1,18 @@
+---
+- name: Installing firewalld
+  yum:
+    name: firewalld
+    state: latest
+
+- name: Starting and enabling firewalld
+  service:
+    name: firewalld
+    enabled: true
+    state: started
+
+- name: Configuring firewall rules
+  firewalld:
+    state: enabled
+    permanent: true
+    service: "{{ firewall_service }}"
+  notify: restart_firewall

@@ -1,0 +1,17 @@
+---
+- name: Include task playbook
+  gather_facts: false
+  hosts: thelastminion
+  become: true
+  tasks:
+  - name: Including the tasks in the tasks.yml
+    include: tasks.yml
+    vars:
+      package: mariadb-server
+      service: mariadb
+      state: started
+    register: output
+
+  - name: Debug the tasks
+    debug:
+      var: output

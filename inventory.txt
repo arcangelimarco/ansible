@@ -1,0 +1,31 @@
+[nodes]
+172.31.118.125 #Ansible-minion-1
+172.31.122.177 #Ansible-minion-2
+172.31.112.27 #Ansible-minion-3
+
+[minionsweb]
+172.31.118.125 #Ansible-minion-1
+172.31.122.177 #Ansible-minion-2
+
+[minions:children]
+minionsweb
+
+[localhostmaster]
+localhost
+
+[thelastminion]
+172.31.112.27 #Ansible-minion-3
+
+[ftp_clients]
+172.31.118.125 #Ansible-minion-1
+
+[ftp_servers]
+172.31.122.177 #Ansible-minion-2
+172.31.112.27 #Ansible-minion-3
+
+[ftp:children]
+ftp_clients
+ftp_servers
+
+[thefirstminion]
+172.31.118.125 #Ansible-minion-1

@@ -1,0 +1,4 @@
+packages:
+  package_http: httpd
+  package_firewall: firewalld
+  package_db: mariadb-server

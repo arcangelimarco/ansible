@@ -1,0 +1,16 @@
+---
+- name: Test
+  hosts: thefirstminion
+  become: true
+
+  tasks:
+
+#  - name: Create file README
+#    file:
+#      state: touch
+#      path: '/home/ansible/README'
+
+  - name: Ensure file README exists
+    copy:
+      dest: '/home/ansible/README'
+      content: "Welcome to the FTP server at {{ ansible_fqdn }}"

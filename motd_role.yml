@@ -1,0 +1,17 @@
+---
+- name: Play using the motd role for change the motd file on remote hosts
+  become: true
+  hosts: all
+  gather_facts: true
+#  vars:
+#    system_owner: CHANGED@MYCOMPANY.COM
+#    hostname: MYHOSTNAME
+
+  roles:
+    - role: motd
+      #se la variabile è presente della directory "vars" del roles, la varibile non viene sovrascritta da quella passata nel playbook
+      #se invece la variabile è presente nalla directory "default" del roles, la variabile viene sovrascritta da quella passata nel playbook
+      #quindi, se nella directory "vars" del roles non c'è la variabile, si possono passare in questo modo sotto il modulo role nel playbook
+      vars:
+        system_owner: CHANGED@MYCOMPANY.COM
+        hostname: MYHOSTNAME

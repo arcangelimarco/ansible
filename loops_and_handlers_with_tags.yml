@@ -1,0 +1,54 @@
+---
+- name: Implementing loops
+  hosts: all
+  gather_facts: false
+  become: true
+  become_method: sudo
+  become_user: root
+  vars:
+    logsfiles:
+      - messages
+      - dmesg
+      - cron
+
+  tasks:
+  - name: Copy logs file from var to temp
+    copy:
+      src: /home/ansible/varslogs/{{ item }}
+      dest: /tmp/{{ item }}
+
+    with_items: "{{ logsfiles }}"
+#    with_items:
+#      - messages
+#      - dmesg
+#      - cron
+
+    notify:
+      - restart_apache
+
+    when: inventory_hostname in groups["minions"]
+
+    tags:
+      - logs
+      - filelogs
+
+  - name: Update index.html
+    shell:
+      chdir: /var/www/html
+      cmd: echo "Ciao" > index.html
+
+#    notify:
+#      - restart_apache
+
+    when: inventory_hostname in groups["minions"] or inventory_hostname in groups["thelastminion"]
+
+    tags:
+      - index
+      - apache
+      - httpd
+
+  handlers:
+  - name: restart_apache
+    service:
+      name: httpd
+      state: restarted

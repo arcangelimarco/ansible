@@ -1,0 +1,34 @@
+---
+- name: Ansible facts
+  hosts: all
+  gather_facts: true
+  become: true
+  become_method: sudo
+  become_user: root
+
+  tasks:
+  - name: Gathering facts
+    ansible.builtin.setup:
+      filter: 'ansible_system'
+    register: os_version
+
+  - debug:
+      msg: >
+        The OS version of {{ ansible_hostname }} is {{ ansible_system }}.
+
+  - name: Install "{{ packages['package_db'] }}" only on Linux system
+    yum:
+      name: "{{ packages['package_db'] }}"
+      state: latest
+
+    when: ansible_system == 'Windows'
+#    when: ansible_system == 'Linux'
+
+  - name: Start "{{ packages['package_db'] }}" only on Linux system
+    service:
+      name: mariadb
+      enabled: true
+      state: started
+
+#    when: ansible_system == 'Windows'
+    when: inventory_hostname in groups["minions"] and ansible_system == 'Linux'

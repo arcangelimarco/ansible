@@ -1,0 +1,5 @@
+{% for myhost in groups['minions'] %}
+{% if myhost == "172.31.118.125" %}
+L'host vincente è: {{ myhost }}
+{% endif %}
+{% endfor %}

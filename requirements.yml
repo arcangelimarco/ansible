@@ -1,0 +1,5 @@
+---
+# Install git role
+#- src: https://github.com/davidkarban/ansible-git.git
+- src: https://github.com/davidkarban/ansible-git/archive/master.tar.gz
+  name: davidkarban.git

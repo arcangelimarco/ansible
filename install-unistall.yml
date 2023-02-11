@@ -1,0 +1,11 @@
+---
+- name: Install and unistall
+  hosts: thefirstminion
+  become: true
+  gather_facts: false
+
+  tasks:
+
+  - name: Install and unistall
+    import_role:
+      name: install-unistall

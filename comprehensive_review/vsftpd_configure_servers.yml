@@ -1,0 +1,58 @@
+---
+- name: vsftpd configure servers
+  hosts: ftp_servers
+  become: true
+
+  vars:
+    vsftpd_anon_root: /mnt/share
+    vsftpd_local_root: /mnt/share
+    vsftpd_anonymous_enable: true
+
+  pre_tasks:
+    - name: Initializing configure vsftpd
+      debug:
+          msg: "Initializing configure vsftpd ..."
+
+  roles:
+    - role: ansible_vsftpd
+
+  post_tasks:
+#    - name: Partition disk
+#      command: >
+#        creates=/dev/nvme0n1p2
+#        parted --script /dev/nvme0n1p2 mklabel gpt mkpart primary 1MiB 100%
+
+    - name: Ensure "{{ vsftpd_anon_root }}" directory exist
+      file:
+        state: directory
+        path: "{{ vsftpd_anon_root }}"
+        owner: root
+        group: root
+        mode: 0755
+        setype: "{{ vsftpd_setype }}"
+
+#    - name: Create a FS in /dev/nvme0n1p2 device only if this FS is not present yet
+#      filesystem:
+#        dev: /dev/nvme0n1p2
+#        fstype: xfs
+#        force: false
+
+#    - name: Mount the FS and write it on /etc/fstab
+#      mount:
+#        name: "{{ vsftpd_anon_root }}"
+#        src: /dev/nvme0n1p2
+#        fstype: xfs
+#        state: mounted
+#        dump: '1'
+#        passno: '2'
+# #       fstab: /etc/fstab #default value is already /etc/fstab
+
+    - name: Ensure file README exists in the ftp root directory
+      copy:
+        dest: '{{ vsftpd_anon_root }}/README'
+        content: "Welcome to the FTP server at {{ ansible_fqdn }}"
+        setype: "{{ vsftpd_setype }}"
+
+    - name: Finish configure vsftpd
+      debug:
+        msg: "Finish configure vsftpd."

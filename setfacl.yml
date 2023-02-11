@@ -1,0 +1,19 @@
+---
+- name: Set ACL
+  hosts: thefirstminion
+  become: true
+  force_handlers: true
+  tasks:
+  - name: Grant user Joe read access to a file
+    ignore_errors: true
+    ansible.posix.acl:
+      path: "{{ logs_file }}"
+      entity: ansible
+      etype: user
+      permissions: rw
+      state: present
+    with_items:
+      - /var/log/messages
+      - /var/log/secure
+    loop_control:
+      loop_var: logs_file

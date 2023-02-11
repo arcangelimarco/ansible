@@ -1,0 +1,16 @@
+---
+- name: Using vhost role playbook
+  hosts: thelastminion
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+    - debug:
+        msg: "Beginning web server configuration"
+
+  roles:
+    - role: myvhost
+
+  post_tasks:
+    - debug:
+        msg: "End web server configuration"

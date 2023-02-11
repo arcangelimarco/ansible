@@ -1,0 +1,66 @@
+---
+- name: Intranet service
+  become: true
+  hosts: minions
+
+  tasks:
+
+  - block:
+    - name: Install "{{ packages['package_http'] }}" service
+      ansible.builtin.yum:
+        name: "{{ packages.package_http }}"
+#        name: "{{ packages['package_http'] }}"
+        state: latest
+    - name: Install "{{ packages['package_firewall'] }}" service
+      ansible.builtin.yum:
+        name: "{{ packages['package_firewall'] }}"
+        state: latest
+
+  - block:
+    - name: Permit firewall rule for httpd
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+
+  - block:
+    - name: Enabling and starting firewalld service
+      service:
+        name: firewalld
+        enabled: true
+        state: started
+    - name: Enabling and starting httpd service
+      service:
+        name: httpd
+        enabled: true
+        state: started
+
+  - block:
+    - name: Insert web content
+      copy:
+        content: "Hi, I am a web server."
+        dest: /var/www/html/index.html
+
+- name: Test connection from localhost to webserves
+  hosts: localhostmaster
+#  vars:
+#    web1: 172.31.123.230
+#    web2: 172.31.118.125
+
+  tasks:
+  - name: Test connection web-server-1
+    uri:
+      #url: http://172.31.123.230
+      url: http://{{ web1 }}
+      status_code: 200
+  - name: Test connection web-server-2
+    uri:
+      #url: http://172.31.118.125
+      url: http://{{ web2 }}
+      status_code: 200
+
+    register: connection_result
+
+  - debug:
+      var: connection_result

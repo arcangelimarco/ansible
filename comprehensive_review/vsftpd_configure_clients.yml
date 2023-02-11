@@ -1,0 +1,11 @@
+---
+- name: vsftpd configure clients
+  hosts: ftp_clients
+  gather_facts: true
+  become: true
+
+  tasks:
+  - name: Installing lftp package
+    yum:
+      name: lftp
+      state: latest
